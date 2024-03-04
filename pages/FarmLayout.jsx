@@ -1,22 +1,26 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressBar } from "../components/ProgressBar";
-import { Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { FarmLayoutModal } from '../components/FarmLayoutModal';
+import { getLayout, updateLayoutData } from '../helpers/helper';
 
 
 export const FarmLayout = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [cropType, setCropType] = useState("");
     const [sprinklerName, setSprinklerName] = useState("");
-    let grid = [7, 6, 5, 4, 3, 2, 1];
-    let temp = [];
+    const [layout, setLayout] = useState([]);
+    const [selection, setSelection] = useState({});
+    const { width } = Dimensions.get('window');
+    const buttonWidth = width - 60;
     let size = 0;
-    for (let i = 0; i < grid.length; i++) {
-        temp.push(Array(grid[i]).fill(0));
-        size = Math.max(size, grid[i]);
-    }
+    useEffect(() => {
+        let temp = getLayout();
+        size = temp.size;
+        setLayout(temp.layout);
+    }, [])
     let p = 'w-10'
     if (size == 1)
         p = 'w-28'
@@ -33,10 +37,23 @@ export const FarmLayout = ({ navigation }) => {
     else if (size == 7)
         p = 'w-11'
 
-    const handleSelection = () => {
-        setModalVisible(true)
+    const handleSelection = (row, col) => {
+        setModalVisible(true);
+        setSelection({ row, col });
     }
-    const [close, setClose] = useState("sdf");
+    useEffect(() => {
+        if (!modalVisible && cropType) {
+            let temp = layout.map((row, rowIndex) => (
+                row.map((item, index) => (
+                    rowIndex == selection.row && index == selection.col ? 1 : item
+                ))
+            ))
+            setLayout(temp);
+            updateLayoutData(selection.row, selection.col, sprinklerName, cropType);
+            setCropType("");
+            setSprinklerName("");
+        }
+    }, [modalVisible])
     return (
         <SafeAreaView>
             <ProgressBar navigation={navigation} progress={2} />
@@ -49,20 +66,20 @@ export const FarmLayout = ({ navigation }) => {
                     Alert.alert('Modal has been closed.');
 
                 }}
-                onDismiss={() => { setClose("closing"); }}
             >
                 <FarmLayoutModal setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
             </Modal>
-            <View className="mt-10">
-                <Text className="px-10 text-3xl font-bold">Farm Layout {close}</Text>
+            <View className="mt-10 h-screen">
+                <Text className="px-10 text-3xl font-bold">Farm Layout </Text>
                 <View className="flex items-center">
                     <View className="mt-4 flex px-4 gap-1">
-                        {temp.map((item) => (
-                            <View className="flex gap-1 flex-row">
+                        {layout.map((item, itemIndex) => (
+                            <View className="flex gap-1 flex-row" key={itemIndex}>
                                 {
-                                    item.map((x) => (
-                                        <TouchableOpacity className={`rounded-lg aspect-square border ${p}`}
-                                            onPress={handleSelection}></TouchableOpacity>
+                                    item.map((x, index) => (
+                                        <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${x ? "bg-[#649468]" : ""}`}
+                                            onPress={() => handleSelection(itemIndex, index)} key={index}>
+                                        </TouchableOpacity>
                                     ))
                                 }
                             </View>
@@ -70,8 +87,11 @@ export const FarmLayout = ({ navigation }) => {
                         )}
                     </View>
                 </View>
+                <TouchableOpacity className="bg-[#649468] rounded-xl absolute left-[30px] bottom-28" style={{ width: buttonWidth }} onPress={() => navigation.navigate("Dashboard")}>
+                    <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
+                </TouchableOpacity>
             </View>
-        </SafeAreaView >
+        </SafeAreaView>
     )
 
 }

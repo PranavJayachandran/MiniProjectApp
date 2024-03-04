@@ -2,6 +2,7 @@ import { Dimensions, Image, Modal, StyleSheet, Text, TouchableOpacity, View, Pre
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputField from "../components/InputField";
 import { useState } from "react";
+import { BackButton } from "../components/BackButton";
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#649468',
@@ -22,7 +23,7 @@ export const SignUp = ({ navigation }) => {
         <SafeAreaView>
             <View>
                 <Modal
-                    animationType="slide"
+                    animationType="fade"
                     transparent={true}
                     visible={modalVisible}
                     onRequestClose={() => {
@@ -39,12 +40,8 @@ export const SignUp = ({ navigation }) => {
 
                 </Modal>
             </View>
-            <View>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Image source={require("../assets/images/backarrow.png")}
-                    />
-                </TouchableOpacity>
-            </View>
+            <BackButton navigation={navigation} />
+
             <View className="mt-10 px-10">
                 <Text className="text-4xl font-bold">
                     Let's get started!
@@ -64,6 +61,7 @@ export const SignUp = ({ navigation }) => {
                         setModalVisible(!modalVisible);
                         setTimeout(function () {
                             setModalVisible((prev) => !prev);
+                            navigation.navigate("FeatureSelect")
                         }, 3000)
                     }}>
                     <Text className="text-center py-3">SignUp</Text>

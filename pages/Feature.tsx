@@ -5,6 +5,7 @@ import { useState } from "react";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import { ProgressBar } from "../components/ProgressBar";
 import { Layout } from "../components/Layout";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const Feature = ({ navigation }) => {
     const { width } = Dimensions.get('window');
@@ -35,52 +36,56 @@ export const Feature = ({ navigation }) => {
     return (
         <SafeAreaView>
             <ProgressBar navigation={navigation} progress={1} />
-            <View className="px-10 mt-10">
-                <Text className="text-3xl font-bold">Select Features!</Text>
-            </View>
-            <View className="px-10 mt-10">
-                <View>
-                    <Text className="mb-1 px-2">Soil Type</Text>
-                    <SelectList
-                        setSelected={(val) => setSoilType(val)}
-                        data={soilTypes}
-                        save="value"
-                        placeholder="Select Soil Type"
-                        searchPlaceholder="Search Soil Type"
-                    />
+            {/* Height here is put as a number should be changed eventually  */}
+            <ScrollView className="h-[700px] ">
+                <View className="px-10 mt-10">
+                    <Text className="text-3xl font-bold">Select Features!</Text>
                 </View>
-                <View className="mt-4">
-                    <Text className="mb-1 px-2">Region</Text>
-                    <SelectList
-                        setSelected={(val) => setRegions(val)}
-                        data={regionTypes}
-                        save="value"
-                        placeholder="Select Region"
-                        searchPlaceholder="Search Region"
-                    />
-                </View>
-                <View className="mt-4">
-                    <Text className="mb-1 px-2">CropTypes</Text>
-                    <MultipleSelectList
-                        setSelected={(val) => setCrops(val)}
-                        data={cropTypes}
-                        save="value"
-                        placeholder="Select Crops"
-                        searchPlaceholder="Search Crop"
-                    />
-                </View>
-                {!showLayout ?
-                    <View className="mt-4">
-                        <TouchableOpacity className="border-2 border-[#649468]  rounded-xl " onPress={() => setShowLayout(true)}>
-                            <Text className="text-[15px] text-center py-3 text-[#649468] font-semibold">Insert Farm Layout</Text>
-                        </TouchableOpacity>
+                <View className="px-10 mt-10">
+                    <View>
+                        <Text className="mb-1 px-2">Soil Type</Text>
+                        <SelectList
+                            setSelected={(val) => setSoilType(val)}
+                            data={soilTypes}
+                            save="value"
+                            placeholder="Select Soil Type"
+                            searchPlaceholder="Search Soil Type"
+                        />
                     </View>
-                    : <Layout grid={grid} setGrid={setGrid} />
-                }
-                <TouchableOpacity className="bg-[#649468] rounded-xl mt-4"  >
-                    <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
-                </TouchableOpacity>
-            </View>
+                    <View className="mt-4">
+                        <Text className="mb-1 px-2">Region</Text>
+                        <SelectList
+                            setSelected={(val) => setRegions(val)}
+                            data={regionTypes}
+                            save="value"
+                            placeholder="Select Region"
+                            searchPlaceholder="Search Region"
+                        />
+                    </View>
+                    <View className="mt-4">
+                        <Text className="mb-1 px-2">CropTypes</Text>
+                        <MultipleSelectList
+                            setSelected={(val) => setCrops(val)}
+                            data={cropTypes}
+                            save="value"
+                            placeholder="Select Crops"
+                            searchPlaceholder="Search Crop"
+                            boxStyles={{ display: 'flex' }}
+                        />
+                    </View>
+                    {!showLayout ?
+                        <View className="mt-4">
+                            <TouchableOpacity className="border-2 border-[#649468]  rounded-xl " onPress={() => setShowLayout(true)}>
+                                <Text className="text-[15px] text-center py-3 text-[#649468] font-semibold">Insert Farm Layout</Text>
+                            </TouchableOpacity>
+                        </View>
+                        : <Layout grid={grid} setGrid={setGrid} />
+                    }
+                    <TouchableOpacity className="bg-[#649468] rounded-xl mt-4" onPress={() => navigation.navigate("FarmLayout")}>
+                        <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 

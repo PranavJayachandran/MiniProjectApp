@@ -7,6 +7,7 @@ import { Login } from './pages/Login';
 import { SignUp } from './pages/SignUp';
 import { Feature } from './pages/Feature';
 import { FarmLayout } from './pages/FarmLayout';
+import Dashboard from './pages/Dashboard';
 
 const Stack = createStackNavigator();
 
@@ -17,11 +18,14 @@ export default function App() {
         headerShown: false
       }}>
         <Stack.Screen
+          name="Home" component={Home} />
+        <Stack.Screen
+          name="Dashboard" component={Dashboard} />
+        <Stack.Screen
           name="FarmLayout" component={FarmLayout} />
         <Stack.Screen
           name="FeatureSelect" component={Feature} />
-        <Stack.Screen
-          name="Home" component={Home} />
+
         <Stack.Screen
           name="Login" component={Login} />
         <Stack.Screen
@@ -40,3 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+// To Fix
+// Current Stauts in the Dashboard component is not aligned with the layout below. A bit of padding is off

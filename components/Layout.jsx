@@ -30,10 +30,10 @@ export const Layout = ({ grid, setGrid }) => {
     return (
         <View className="bg-[#E3F6E5] pb-4 pt-2 rounded-xl mt-2">
             {grid.map((row, rowIndex) => (
-                <View className="flex gap-2 flex-row justify-center mt-[1px]">
+                <View className="flex gap-2 flex-row justify-center mt-[1px]" key={rowIndex}>
                     {
                         row.map((item, index) => (
-                            <TouchableOpacity onPress={() => handleSelect(rowIndex, index)} style={{ width: "10%" }} className={`h-7 rounded-sm border border-[#649468] ${item ? 'bg-[#649468]' : ''}`}>
+                            <TouchableOpacity key={index} onPress={() => handleSelect(rowIndex, index)} style={{ width: "10%" }} className={`h-7 rounded-sm border border-[#649468] ${item ? 'bg-[#649468]' : ''}`}>
                             </TouchableOpacity>
                         ))
                     }
