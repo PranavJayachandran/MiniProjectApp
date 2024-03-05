@@ -6,6 +6,7 @@ import { MultipleSelectList, SelectList } from "react-native-dropdown-select-lis
 import { ProgressBar } from "../components/ProgressBar";
 import { Layout } from "../components/Layout";
 import { ScrollView } from "react-native-gesture-handler";
+import { getUserId } from "../helpers/helper";
 
 export const Feature = ({ navigation }) => {
     const { width } = Dimensions.get('window');
@@ -33,6 +34,38 @@ export const Feature = ({ navigation }) => {
         { key: '3', value: 'three' },
         { key: '4', value: 'four' },
     ]
+    const handleContinue = async () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let layout = [];
+        grid.map((row) => {
+            let p = -1;
+            row.map((item, index) => {
+                if (item == 1)
+                    p = index;
+            })
+            if (p != -1)
+                layout.push(p);
+        })
+        const raw = JSON.stringify({
+            "userId": await getUserId(),
+            "soilType": soilType,
+            "region": region,
+            "croptTypes": crops,
+            "layout": layout
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        let response = await fetch("http://192.168.99.143:3000/farm/set", requestOptions)
+        let result = await response.json();
+        navigation.navigate("FarmLayout")
+    }
     return (
         <SafeAreaView>
             <ProgressBar navigation={navigation} progress={1} />
@@ -81,7 +114,7 @@ export const Feature = ({ navigation }) => {
                         </View>
                         : <Layout grid={grid} setGrid={setGrid} />
                     }
-                    <TouchableOpacity className="bg-[#649468] rounded-xl mt-4" onPress={() => navigation.navigate("FarmLayout")}>
+                    <TouchableOpacity className="bg-[#649468] rounded-xl mt-4" onPress={handleContinue}>
                         <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
                     </TouchableOpacity>
                 </View>

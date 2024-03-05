@@ -1,24 +1,44 @@
 import { Dimensions, Image, Modal, StyleSheet, Text, TouchableOpacity, View, Pressable, Alert } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputField from "../components/InputField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BackButton } from "../components/BackButton";
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#649468',
-        opacity: 0.55,
-    }
-});
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 
-export default styles;
 
 export const SignUp = ({ navigation }) => {
+    const styles = StyleSheet.create({
+        container: {
+            backgroundColor: '#649468',
+            opacity: 0.55,
+        }
+    });
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60; // 40 pixels on each side
     const [modalVisible, setModalVisible] = useState(false);
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
 
+    const signUp = async () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "userName": userName,
+            "password": password
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        let response = await fetch(`http://192.168.99.143:3000/user/signup`, requestOptions);
+        let result = await response.json();
+        await AsyncStorage.setItem('userId', result.id);
+    }
     return (
         <SafeAreaView>
             <View>
@@ -32,7 +52,7 @@ export const SignUp = ({ navigation }) => {
                     <View className="h-screen w-screen bg-opacity-10" style={styles.container}>
                     </View>
                     <View className="absolute bg-white px-10 py-10 rounded-xl top-72 left-16 flex gap-2 items-center">
-                        <View className=" h-10 w-10 bg-opacity-100 bg-[#649468] flex justify-center items-center rounded-full" style={styles.tick}>
+                        <View className=" h-10 w-10 bg-opacity-100 bg-[#649468] flex justify-center items-center rounded-full">
                             <Image source={require("../assets/images/tick.png")} />
                         </View>
                         <Text className="text-xl font-bold">Account Created !</Text>
@@ -57,7 +77,8 @@ export const SignUp = ({ navigation }) => {
             </View>
             <View className="mx-10 mt-20">
                 <TouchableOpacity className="bg-[#649468] rounded-xl " style={{ width: buttonWidth }}
-                    onPress={() => {
+                    onPress={async () => {
+                        await signUp();
                         setModalVisible(!modalVisible);
                         setTimeout(function () {
                             setModalVisible((prev) => !prev);

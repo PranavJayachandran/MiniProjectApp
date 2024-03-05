@@ -3,15 +3,37 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import InputField from "../components/InputField";
 import { useState } from "react";
 import { BackButton } from "../components/BackButton";
+import { setUserId } from "../helpers/helper";
+
 
 export const Login = ({ navigation }) => {
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60; // 40 pixels on each side
-
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const handleLogin = () => {
-        navigation.navigate("FeatureSelect")
+    const handleLogin = async () => {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "userName": userName,
+            "passWord": password
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        let response = await fetch("http://192.168.99.143:3000/user/login", requestOptions)
+        let result = await response.json();
+        if (result.id) {
+            await setUserId(result.id);
+            navigation.navigate("FeatureSelect")
+        }
+
     }
     return (
         <SafeAreaView>

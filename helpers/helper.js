@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const getLayout = () => {
     let grid = [7, 6, 5, 4, 3, 2, 1];
     let layout = [];
@@ -16,4 +18,15 @@ export const updateSprinklerState = (row, col, sprinklerState) => {
 }
 export const updateLayoutData = (row, col, sprinklerName, cropType) => {
     return
+}
+export const setUserId = async (id) => {
+    await AsyncStorage.setItem(
+        'userId',
+        id
+    );
+}
+export const getUserId = async (id) => {
+    return await AsyncStorage.getItem(
+        'userId'
+    );
 }

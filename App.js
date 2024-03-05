@@ -48,3 +48,6 @@ const styles = StyleSheet.create({
 
 // To Fix
 // Current Stauts in the Dashboard component is not aligned with the layout below. A bit of padding is off
+
+// To Start
+// Start with farmlayout, backend api should be done.
