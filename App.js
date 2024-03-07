@@ -18,11 +18,12 @@ export default function App() {
         headerShown: false
       }}>
         <Stack.Screen
+          name="FarmLayout" component={FarmLayout} />
+        <Stack.Screen
           name="Home" component={Home} />
         <Stack.Screen
           name="Dashboard" component={Dashboard} />
-        <Stack.Screen
-          name="FarmLayout" component={FarmLayout} />
+
         <Stack.Screen
           name="FeatureSelect" component={Feature} />
 

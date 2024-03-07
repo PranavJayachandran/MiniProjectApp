@@ -4,9 +4,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import InputField from "./InputField";
 import { FontAwesome } from '@expo/vector-icons';
 export const StatusModal = ({ setModalVisible, modalData, changeSprinklerState }) => {
-    const [isEnabled, setIsEnabled] = useState(modalData.sprinklerState);
-
-
+    const [isEnabled, setIsEnabled] = useState(modalData.ifOn);
     const toggleSwitch = () => { setIsEnabled(previousState => !previousState) };
     return (
         <View className="h-screen w-screen flex justify-center items-center">

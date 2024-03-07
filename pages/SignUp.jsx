@@ -46,9 +46,7 @@ export const SignUp = ({ navigation }) => {
                     animationType="fade"
                     transparent={true}
                     visible={modalVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                    }}>
+                >
                     <View className="h-screen w-screen bg-opacity-10" style={styles.container}>
                     </View>
                     <View className="absolute bg-white px-10 py-10 rounded-xl top-72 left-16 flex gap-2 items-center">

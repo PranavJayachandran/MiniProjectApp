@@ -1,8 +1,8 @@
-import { Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BackButton } from "../components/BackButton"
 import { useEffect, useState } from "react";
-import { getBoxData, getLayout, updateSprinklerState } from "../helpers/helper";
+import { getLayout, getSprinklerData, updateSprinklerMode } from "../helpers/helper";
 import { StatusModal } from "../components/StatusModal";
 import CircularProgress from 'react-native-circular-progress-indicator';
 
@@ -10,12 +10,13 @@ const Dashboard = ({ navigation }) => {
     const [layout, setLayout] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({});
+    const [selectedId, setSelectedId] = useState("");
     let p = 'w-10';
     let size = 0;
-    useEffect(() => {
-        let temp = getLayout();
-        setLayout(temp.layout);
+    const setUpLayout = async () => {
+        let temp = await getLayout();
         size = temp.size;
+        setLayout(temp.layout);
         if (size == 1)
             p = 'w-28'
         else if (size == 2)
@@ -30,22 +31,34 @@ const Dashboard = ({ navigation }) => {
             p = 'w-12'
         else if (size == 7)
             p = 'w-11'
-    }, []);
-    const handleSelection = (row, col) => {
-        setModalData(getBoxData(row, col));
     }
     useEffect(() => {
-        if (modalData.row)
+        setUpLayout();
+    }, []);
+
+    const handleSelection = async (id) => {
+        setSelectedId(id);
+        setModalData(await getSprinklerData(id));
+    }
+    useEffect(() => {
+        if (selectedId != "")
             setModalVisible(true);
     }, [modalData]);
-    const changeSprinklerState = (isEnabled) => {
+
+
+    const changeSprinklerState = async (isEnabled) => {
+        let id = "";
         let temp = layout.map((row, rowIndex) => (
-            row.map((item, index) => (
-                rowIndex == modalData.row && index == modalData.col ? isEnabled : item
-            ))
+            row.map((item, index) => {
+                if (item._id == selectedId) {
+                    return { ...item, ifOn: isEnabled };
+                }
+                return item;
+
+            })
         ))
         setLayout(temp);
-        ; updateSprinklerState(modalData.row, modalData.col, modalData.sprinklerState);
+        await updateSprinklerMode(selectedId, isEnabled);
     }
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60;
@@ -57,10 +70,7 @@ const Dashboard = ({ navigation }) => {
                 transparent={true}
                 visible={modalVisible}
 
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
 
-                }}
             >
                 <StatusModal setModalVisible={setModalVisible} modalData={modalData} changeSprinklerState={changeSprinklerState} />
             </Modal>
@@ -93,8 +103,8 @@ const Dashboard = ({ navigation }) => {
                                         <View className="flex gap-1 flex-row" key={itemIndex}>
                                             {
                                                 item.map((x, index) => (
-                                                    <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${x ? "bg-[#649468]" : ""}`}
-                                                        onPress={() => { handleSelection(itemIndex, index) }}
+                                                    <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${x.ifOn ? "bg-[#649468]" : ""}`}
+                                                        onPress={() => { handleSelection(x._id) }}
                                                         key={index}>
                                                     </TouchableOpacity>
                                                 ))

@@ -1,10 +1,10 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressBar } from "../components/ProgressBar";
-import { Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { FarmLayoutModal } from '../components/FarmLayoutModal';
-import { getLayout, updateLayoutData } from '../helpers/helper';
+import { getLayout, updateLayoutData, updateSprinklerState } from '../helpers/helper';
 
 
 export const FarmLayout = ({ navigation }) => {
@@ -16,10 +16,13 @@ export const FarmLayout = ({ navigation }) => {
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60;
     let size = 0;
-    useEffect(() => {
-        let temp = getLayout();
+    const setUpLayout = async () => {
+        let temp = await getLayout();
         size = temp.size;
         setLayout(temp.layout);
+    }
+    useEffect(() => {
+        setUpLayout()
     }, [])
     let p = 'w-10'
     if (size == 1)
@@ -37,19 +40,23 @@ export const FarmLayout = ({ navigation }) => {
     else if (size == 7)
         p = 'w-11'
 
-    const handleSelection = (row, col) => {
+    const handleSelection = (row, col, item) => {
+        setCropType(item.cropType);
+        setSprinklerName(item.sprinkerName);
         setModalVisible(true);
         setSelection({ row, col });
     }
     useEffect(() => {
         if (!modalVisible && cropType) {
+            let id = "";
             let temp = layout.map((row, rowIndex) => (
-                row.map((item, index) => (
-                    rowIndex == selection.row && index == selection.col ? 1 : item
-                ))
+                row.map((item, index) => {
+                    if (rowIndex == selection.row && index == selection.col) { id = item._id; return { ...item, cropType: cropType, sprinklerName: sprinklerName } }
+                    return item
+                })
             ))
             setLayout(temp);
-            updateLayoutData(selection.row, selection.col, sprinklerName, cropType);
+            updateSprinklerState(id, sprinklerName, cropType);
             setCropType("");
             setSprinklerName("");
         }
@@ -62,10 +69,7 @@ export const FarmLayout = ({ navigation }) => {
                 transparent={true}
                 visible={modalVisible}
 
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
 
-                }}
             >
                 <FarmLayoutModal setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
             </Modal>
@@ -77,8 +81,8 @@ export const FarmLayout = ({ navigation }) => {
                             <View className="flex gap-1 flex-row" key={itemIndex}>
                                 {
                                     item.map((x, index) => (
-                                        <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${x ? "bg-[#649468]" : ""}`}
-                                            onPress={() => handleSelection(itemIndex, index)} key={index}>
+                                        <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${(x.cropType.length != 0 || x.sprinklerName.length != 0) ? "bg-[#649468]" : ""}`}
+                                            onPress={() => handleSelection(itemIndex, index, x)} key={index}>
                                         </TouchableOpacity>
                                     ))
                                 }
