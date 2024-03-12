@@ -9,30 +9,28 @@ import { ScrollView } from "react-native-gesture-handler";
 import { getUserId } from "../helpers/helper";
 
 export const Feature = ({ navigation }) => {
-    const { width } = Dimensions.get('window');
     const [soilType, setSoilType] = useState("");
     const [region, setRegions] = useState("");
     const [crops, setCrops] = useState("");
     const [showLayout, setShowLayout] = useState(false);
     const [grid, setGrid] = useState(Array(6).fill(Array(7).fill(false)));
-    const [pos, setPos] = useState({ x: 0, y: 0 });
     const soilTypes = [
-        { key: '1', value: 'one' },
-        { key: '2', value: 'two' },
-        { key: '3', value: 'three' },
-        { key: '4', value: 'four' },
+        { key: '1', value: 'Dry' },
+        { key: '2', value: 'Humid' },
+        { key: '3', value: 'Wet' },
     ]
     const regionTypes = [
-        { key: '1', value: 'one' },
-        { key: '2', value: 'two' },
-        { key: '3', value: 'three' },
-        { key: '4', value: 'four' },
+        { key: '1', value: 'Desert' },
+        { key: '2', value: 'Semi Arid' },
+        { key: '3', value: 'Semi Humid' },
+        { key: '4', value: 'Humid' },
     ]
     const cropTypes = [
-        { key: '1', value: 'one' },
-        { key: '2', value: 'two' },
-        { key: '3', value: 'three' },
-        { key: '4', value: 'four' },
+        { key: '1', value: 'Cabbage' },
+        { key: '2', value: 'Melon' },
+        { key: '3', value: 'Bean' },
+        { key: '4', value: 'Tomato' },
+        { key: '5', value: 'Onion' },
     ]
     const handleContinue = async () => {
         const myHeaders = new Headers();
@@ -42,7 +40,7 @@ export const Feature = ({ navigation }) => {
             let p = -1;
             row.map((item, index) => {
                 if (item == 1)
-                    p = index;
+                    p = index + 1;
             })
             if (p != -1)
                 layout.push(p);
@@ -51,8 +49,8 @@ export const Feature = ({ navigation }) => {
             "userId": await getUserId(),
             "soilType": soilType,
             "region": region,
-            "croptTypes": crops,
-            "layout": layout
+            "cropTypes": crops,
+            "layout": layout,
         });
 
         const requestOptions = {
@@ -63,7 +61,6 @@ export const Feature = ({ navigation }) => {
         };
 
         let response = await fetch("http://192.168.99.143:3000/farm/set", requestOptions)
-        let result = await response.json();
         navigation.navigate("FarmLayout")
     }
     return (

@@ -17,7 +17,7 @@ export const getLayout = async () => {
 
     let response = await fetch("http://192.168.99.143:3000/farm/layout", requestOptions)
     let result = await response.json();
-
+    let cropTypes = result.cropTypes;
     let grid = [7, 6, 5, 4, 3, 2, 1];
     let layout = [];
     let size = 0;
@@ -25,12 +25,12 @@ export const getLayout = async () => {
         let tempRow = []
         await Promise.all(result.layout[i].map(async (item) => {
             let sprinklerState = await getSprinklerData(item);
-            tempRow.unshift(sprinklerState);
+            tempRow.push(sprinklerState);
         }))
         layout.unshift(tempRow);
         size = Math.max(size, grid[i]);
     }
-    return { layout, size };
+    return { layout, size, cropTypes };
 }
 export const updateSprinklerState = async (id, cropType, sprinklerName, ifOn) => {
     const myHeaders = new Headers();
@@ -52,7 +52,6 @@ export const updateSprinklerState = async (id, cropType, sprinklerName, ifOn) =>
 
     let response = await fetch("http://192.168.99.143:3000/sprinkler/changeData", requestOptions)
     let result = await response.json();
-    return result.dat
 }
 export const updateSprinklerMode = async (id, ifOn) => {
     const myHeaders = new Headers();
@@ -70,8 +69,6 @@ export const updateSprinklerMode = async (id, ifOn) => {
     };
 
     let response = await fetch("http://192.168.99.143:3000/sprinkler/changeState", requestOptions)
-    let result = await response.json();
-    return result.data
 }
 export const updateLayoutData = (id) => {
     return
@@ -101,9 +98,27 @@ export const setUserId = async (id) => {
         id
     );
 }
-export const getUserId = async (id) => {
-    return '65e722d89f06c38c62279342';
+export const getUserId = async () => {
     return await AsyncStorage.getItem(
         'userId'
     );
+}
+export const getNumberofSprinklerOn = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+        "userId": await getUserId()
+    });
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+    };
+
+    let response = await fetch("http://192.168.99.143:3000/sprinkler/numberofsprinklerOn", requestOptions);
+    let result = await response.json();
+    return result.number;
 }

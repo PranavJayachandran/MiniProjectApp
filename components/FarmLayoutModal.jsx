@@ -1,14 +1,7 @@
-import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native"
 import { SelectList } from "react-native-dropdown-select-list";
 import InputField from "./InputField";
-export const FarmLayoutModal = ({ setModalVisible, sprinklerName, setSprinklerName, setCropType }) => {
-    const cropTypes = [
-        { key: '1', value: 'one' },
-        { key: '2', value: 'two' },
-        { key: '3', value: 'three' },
-        { key: '4', value: 'four' },
-    ]
+export const FarmLayoutModal = ({ cropTypes, setModalVisible, sprinklerName, setSprinklerName, setCropType }) => {
     return (
         <View className="h-screen w-screen flex justify-center items-center">
             <View className="border rounded-xl w-72 py-4 flex justify-center bg-white">

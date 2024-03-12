@@ -2,7 +2,7 @@ import { Alert, Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, Vi
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BackButton } from "../components/BackButton"
 import { useEffect, useState } from "react";
-import { getLayout, getSprinklerData, updateSprinklerMode } from "../helpers/helper";
+import { getLayout, getNumberofSprinklerOn, getSprinklerData, updateSprinklerMode } from "../helpers/helper";
 import { StatusModal } from "../components/StatusModal";
 import CircularProgress from 'react-native-circular-progress-indicator';
 
@@ -11,10 +11,12 @@ const Dashboard = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState({});
     const [selectedId, setSelectedId] = useState("");
+    const [numberofSprinklersOn, setNumberofSprinklersOn] = useState(0);
     let p = 'w-10';
     let size = 0;
     const setUpLayout = async () => {
         let temp = await getLayout();
+        setNumberofSprinklersOn(await getNumberofSprinklerOn());
         size = temp.size;
         setLayout(temp.layout);
         if (size == 1)
@@ -58,7 +60,10 @@ const Dashboard = ({ navigation }) => {
             })
         ))
         setLayout(temp);
+
         await updateSprinklerMode(selectedId, isEnabled);
+        console.log("calling Now");
+        setNumberofSprinklersOn(await getNumberofSprinklerOn());
     }
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60;
@@ -81,7 +86,7 @@ const Dashboard = ({ navigation }) => {
                             Welcome User!
                         </Text>
                         <Text className="text-white mt-2 text-lg">
-                            4 Sprinklers on
+                            {numberofSprinklersOn} Sprinklers on
                         </Text>
                     </View>
                     <View>

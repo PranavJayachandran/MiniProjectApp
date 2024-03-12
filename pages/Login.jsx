@@ -31,7 +31,7 @@ export const Login = ({ navigation }) => {
         let result = await response.json();
         if (result.id) {
             await setUserId(result.id);
-            navigation.navigate("FeatureSelect")
+            navigation.navigate("Dashboard")
         }
 
     }

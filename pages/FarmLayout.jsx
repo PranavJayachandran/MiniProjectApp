@@ -13,6 +13,7 @@ export const FarmLayout = ({ navigation }) => {
     const [sprinklerName, setSprinklerName] = useState("");
     const [layout, setLayout] = useState([]);
     const [selection, setSelection] = useState({});
+    const [cropTypes, setCropTypes] = useState([]);
     const { width } = Dimensions.get('window');
     const buttonWidth = width - 60;
     let size = 0;
@@ -20,6 +21,7 @@ export const FarmLayout = ({ navigation }) => {
         let temp = await getLayout();
         size = temp.size;
         setLayout(temp.layout);
+        setCropTypes(temp.cropTypes);
     }
     useEffect(() => {
         setUpLayout()
@@ -71,7 +73,7 @@ export const FarmLayout = ({ navigation }) => {
 
 
             >
-                <FarmLayoutModal setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
+                <FarmLayoutModal cropTypes={cropTypes} setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
             </Modal>
             <View className="mt-10 h-screen">
                 <Text className="px-10 text-3xl font-bold">Farm Layout </Text>

@@ -4,6 +4,7 @@ import InputField from "../components/InputField";
 import { useEffect, useState } from "react";
 import { BackButton } from "../components/BackButton";
 import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { setUserId } from "../helpers/helper";
 
 
 export const SignUp = ({ navigation }) => {
@@ -25,7 +26,7 @@ export const SignUp = ({ navigation }) => {
 
         const raw = JSON.stringify({
             "userName": userName,
-            "password": password
+            "passWord": password
         });
 
         const requestOptions = {
@@ -37,7 +38,8 @@ export const SignUp = ({ navigation }) => {
 
         let response = await fetch(`http://192.168.99.143:3000/user/signup`, requestOptions);
         let result = await response.json();
-        await AsyncStorage.setItem('userId', result.id);
+        console.log(result);
+        await setUserId(result.id);
     }
     return (
         <SafeAreaView>
@@ -76,7 +78,9 @@ export const SignUp = ({ navigation }) => {
             <View className="mx-10 mt-20">
                 <TouchableOpacity className="bg-[#649468] rounded-xl " style={{ width: buttonWidth }}
                     onPress={async () => {
+                        console.log("Start");
                         await signUp();
+                        console.log("here");
                         setModalVisible(!modalVisible);
                         setTimeout(function () {
                             setModalVisible((prev) => !prev);
