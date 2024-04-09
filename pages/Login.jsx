@@ -4,6 +4,8 @@ import InputField from "../components/InputField";
 import { useState } from "react";
 import { BackButton } from "../components/BackButton";
 import { setUserId } from "../helpers/helper";
+import ErrorToaster from "../components/ErrorToaster";
+import Loader from "../components/Loader";
 
 
 export const Login = ({ navigation }) => {
@@ -11,7 +13,10 @@ export const Login = ({ navigation }) => {
     const buttonWidth = width - 60; // 40 pixels on each side
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [showLoader, setShowLoader] = useState(false);
     const handleLogin = async () => {
+        setShowLoader(true);
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -31,12 +36,17 @@ export const Login = ({ navigation }) => {
         let result = await response.json();
         if (result.id) {
             await setUserId(result.id);
+            setShowLoader(false);
             navigation.navigate("Dashboard")
         }
-
+        if (result.err) {
+            setShowLoader(false);
+            setError(result.err);
+        }
     }
     return (
         <SafeAreaView>
+            {error.length > 0 ? <ErrorToaster message={error} setError={setError} /> : <></>}
             <BackButton navigation={navigation} />
 
             <View className="mt-10 px-10">
@@ -52,6 +62,8 @@ export const Login = ({ navigation }) => {
                 <InputField title="Username" inputdata={userName} setData={setUserName} />
                 <InputField title="Password" inputdata={password} setData={setPassword} />
             </View>
+            {showLoader ? <Loader message={"Logging In"} />
+                : <></>}
             <View className="mx-10 mt-20">
                 <TouchableOpacity className="bg-[#649468] rounded-xl " style={{ width: buttonWidth }}
                     onPress={() => handleLogin()}>

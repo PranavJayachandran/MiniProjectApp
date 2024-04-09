@@ -1,10 +1,11 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressBar } from "../components/ProgressBar";
-import { Alert, Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { FarmLayoutModal } from '../components/FarmLayoutModal';
 import { getLayout, updateLayoutData, updateSprinklerState } from '../helpers/helper';
+import Loader from '../components/Loader';
 
 
 export const FarmLayout = ({ navigation }) => {
@@ -63,41 +64,52 @@ export const FarmLayout = ({ navigation }) => {
             setSprinklerName("");
         }
     }, [modalVisible])
-    return (
-        <SafeAreaView>
+    if (layout.length > 0)
+        return (
+            <SafeAreaView>
+                <ProgressBar navigation={navigation} progress={2} />
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+
+
+                >
+                    <FarmLayoutModal cropTypes={cropTypes} setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
+                </Modal>
+                <View className="mt-10 h-screen">
+                    <Text className="px-10 text-3xl font-bold">Farm Layout </Text>
+                    <View className="flex items-center">
+                        <View className="mt-4 flex px-4 gap-1">
+                            {layout.map((item, itemIndex) => (
+                                <View className="flex gap-1 flex-row" key={itemIndex}>
+                                    {
+                                        item.map((x, index) => (
+                                            <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${(x.cropType.length != 0 || x.sprinklerName.length != 0) ? "bg-[#649468]" : ""}`}
+                                                onPress={() => handleSelection(itemIndex, index, x)} key={index}>
+                                            </TouchableOpacity>
+                                        ))
+                                    }
+                                </View>
+                            )
+                            )}
+                        </View>
+                    </View>
+                    <TouchableOpacity className="bg-[#649468] rounded-xl absolute left-[30px] bottom-28" style={{ width: buttonWidth }} onPress={() => navigation.navigate("Dashboard")}>
+                        <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        )
+    else
+        return <SafeAreaView>
             <ProgressBar navigation={navigation} progress={2} />
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalVisible}
-
-
-            >
-                <FarmLayoutModal cropTypes={cropTypes} setModalVisible={setModalVisible} sprinklerName={sprinklerName} setSprinklerName={setSprinklerName} setCropType={setCropType} />
-            </Modal>
             <View className="mt-10 h-screen">
                 <Text className="px-10 text-3xl font-bold">Farm Layout </Text>
-                <View className="flex items-center">
-                    <View className="mt-4 flex px-4 gap-1">
-                        {layout.map((item, itemIndex) => (
-                            <View className="flex gap-1 flex-row" key={itemIndex}>
-                                {
-                                    item.map((x, index) => (
-                                        <TouchableOpacity className={`rounded-lg aspect-square border ${p} ${(x.cropType.length != 0 || x.sprinklerName.length != 0) ? "bg-[#649468]" : ""}`}
-                                            onPress={() => handleSelection(itemIndex, index, x)} key={index}>
-                                        </TouchableOpacity>
-                                    ))
-                                }
-                            </View>
-                        )
-                        )}
-                    </View>
-                </View>
-                <TouchableOpacity className="bg-[#649468] rounded-xl absolute left-[30px] bottom-28" style={{ width: buttonWidth }} onPress={() => navigation.navigate("Dashboard")}>
-                    <Text className="text-center py-3 font-bold text-[15px]">Continue</Text>
-                </TouchableOpacity>
+                <Loader message={"Loading...."} />
             </View>
         </SafeAreaView>
-    )
+
+
 
 }
