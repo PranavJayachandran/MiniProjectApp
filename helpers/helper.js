@@ -15,7 +15,7 @@ export const getLayout = async () => {
         redirect: "follow"
     };
 
-    let response = await fetch("http://192.168.99.143:3000/farm/layout", requestOptions)
+    let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/farm/layout`, requestOptions)
     let result = await response.json();
     let cropTypes = result.cropTypes;
     let grid = [7, 6, 5, 4, 3, 2, 1];
@@ -50,7 +50,7 @@ export const updateSprinklerState = async (id, cropType, sprinklerName, ifOn) =>
         redirect: "follow"
     };
 
-    let response = await fetch("http://192.168.99.143:3000/sprinkler/changeData", requestOptions)
+    let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sprinkler/changeData`, requestOptions)
     let result = await response.json();
 }
 export const updateSprinklerMode = async (id, ifOn) => {
@@ -68,7 +68,7 @@ export const updateSprinklerMode = async (id, ifOn) => {
         redirect: "follow"
     };
 
-    let response = await fetch("http://192.168.99.143:3000/sprinkler/changeState", requestOptions)
+    let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sprinkler/changeState`, requestOptions)
 }
 export const updateLayoutData = (id) => {
     return
@@ -88,7 +88,7 @@ export const getSprinklerData = async (id) => {
         redirect: "follow"
     };
 
-    let response = await fetch("http://192.168.99.143:3000/sprinkler", requestOptions)
+    let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sprinkler`, requestOptions)
     let result = await response.json();
     return result.data;
 }
@@ -118,7 +118,7 @@ export const getNumberofSprinklerOn = async () => {
         redirect: "follow"
     };
 
-    let response = await fetch("http://192.168.99.143:3000/sprinkler/numberofsprinklerOn", requestOptions);
+    let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sprinkler/numberofsprinklerOn`, requestOptions);
     let result = await response.json();
     return result.number;
 }
