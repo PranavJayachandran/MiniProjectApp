@@ -53,12 +53,14 @@ export const updateSprinklerState = async (id, cropType, sprinklerName, ifOn) =>
     let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sprinkler/changeData`, requestOptions)
     let result = await response.json();
 }
-export const updateSprinklerMode = async (id, ifOn) => {
+export const updateSprinklerMode = async (id, ifOn,time,amt) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const raw = JSON.stringify({
         "id": id,
-        "ifOn": ifOn
+        "ifOn": ifOn,
+        "time":time,
+        "amt":amt
     });
 
     const requestOptions = {

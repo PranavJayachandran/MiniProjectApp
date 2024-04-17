@@ -17,11 +17,12 @@ export default function App() {
       <Stack.Navigator screenOptions={{
         headerShown: false
       }}>
-
         <Stack.Screen
           name="Home" component={Home} />
         <Stack.Screen
           name="Dashboard" component={Dashboard} />
+        <Stack.Screen
+          name="SignUp" component={SignUp} />
         <Stack.Screen
           name="FarmLayout" component={FarmLayout} />
         <Stack.Screen
@@ -29,8 +30,7 @@ export default function App() {
 
         <Stack.Screen
           name="Login" component={Login} />
-        <Stack.Screen
-          name="SignUp" component={SignUp} />
+
       </Stack.Navigator>
     </NavigationContainer>
 
