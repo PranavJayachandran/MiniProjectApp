@@ -33,15 +33,17 @@ export const SignUp = ({ navigation }) => {
             "userName": userName,
             "passWord": password
         });
-
-        const requestOptions = {
+        console.log(raw)
+        try
+        {
+            const requestOptions = {
             method: "POST",
             headers: myHeaders,
             body: raw,
             redirect: "follow"
         };
-
-        let response = await fetch(`http://192.168.99.143:3000/user/signup`, requestOptions);
+        console.log(`${process.env.EXPO_PUBLIC_API_URL}/user/signup`)
+        let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/user/signup`, requestOptions);
         let result = await response.json();
         console.log(result);
         if (result.err) {
@@ -50,10 +52,12 @@ export const SignUp = ({ navigation }) => {
         }
         await setUserId(result.id);
         return true;
+        }
+    catch(error)
+    {
+        console.log(error)
     }
-    useEffect(() => {
-        console.log("Changed", error);
-    }, [error]);
+    }
     return (
         <SafeAreaView>
             {error.length > 0 ? <ErrorToaster message={error} setError={setError} /> : <></>}

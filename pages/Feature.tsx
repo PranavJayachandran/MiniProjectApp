@@ -60,7 +60,7 @@ export const Feature = ({ navigation }) => {
             redirect: "follow"
         };
 
-        let response = await fetch("http://192.168.99.143:3000/farm/set", requestOptions)
+        let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/farm/set`, requestOptions)
         navigation.navigate("FarmLayout")
     }
     return (

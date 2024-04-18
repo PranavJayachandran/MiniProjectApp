@@ -48,12 +48,12 @@ const Dashboard = ({ navigation }) => {
     }, [modalData]);
 
 
-    const changeSprinklerState = async (isEnabled) => {
+    const changeSprinklerState = async (isEnabled,time,amt) => {
         let id = "";
         let temp = layout.map((row, rowIndex) => (
             row.map((item, index) => {
                 if (item._id == selectedId) {
-                    return { ...item, ifOn: isEnabled };
+                    return { ...item, ifOn: isEnabled ,schedule: { time, amt } };
                 }
                 return item;
 
@@ -61,7 +61,7 @@ const Dashboard = ({ navigation }) => {
         ))
         setLayout(temp);
 
-        await updateSprinklerMode(selectedId, isEnabled);
+        await updateSprinklerMode(selectedId, isEnabled,time,amt);
         console.log("calling Now");
         setNumberofSprinklersOn(await getNumberofSprinklerOn());
     }
@@ -122,6 +122,9 @@ const Dashboard = ({ navigation }) => {
                         </ScrollView>
                     </View>
                 </View>
+                {/* <TouchableOpacity className="bg-[#649468] rounded-xl absolute left-[30px] bottom-40" style={{ width: buttonWidth }} >
+                    <Text className="text-center py-3 font-bold text-[15px]">Get Schedule</Text>
+                </TouchableOpacity> */}
                 <TouchableOpacity className="bg-[#649468] rounded-xl absolute left-[30px] bottom-20" style={{ width: buttonWidth }} >
                     <Text className="text-center py-3 font-bold text-[15px]">Get Monthly Report</Text>
                 </TouchableOpacity>

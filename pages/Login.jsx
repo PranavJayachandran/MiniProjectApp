@@ -24,24 +24,29 @@ export const Login = ({ navigation }) => {
             "userName": userName,
             "passWord": password
         });
-
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-        };
-
-        let response = await fetch("http://192.168.99.143:3000/user/login", requestOptions)
-        let result = await response.json();
-        if (result.id) {
-            await setUserId(result.id);
+        try{
+            console.log("here")
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow"
+            };
+            let response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/user/login`, requestOptions)
+            let result = await response.json();
+            if (result.id) {
+                await setUserId(result.id);
             setShowLoader(false);
-            navigation.navigate("Dashboard")
-        }
+                navigation.navigate("Dashboard")
+            }
         if (result.err) {
             setShowLoader(false);
             setError(result.err);
+        }    
+        }
+        catch(error)
+        {
+            console.log(error)
         }
     }
     return (
